@@ -73,7 +73,17 @@ function getY(event) {
     return event.clientY - drawing_canvas.offsetTop;
 }
 
-
+// control the connection status icon label thingy
+function status_offline() {
+    $("#connection_status").removeClass("online");
+    $("#connection_status").addClass("offline");
+    $("#connection_status").text("offline");
+}
+function status_online() {
+    $("#connection_status").removeClass("offline");
+    $("#connection_status").addClass("online");
+    $("#connection_status").text("online");
+}
 /*
 var Map = function (canvas) {
     this.canvas = canvas;

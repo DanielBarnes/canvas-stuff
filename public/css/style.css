@@ -9,7 +9,7 @@ body {
     box-sizing: border-box;
     color: #CCC;
     left: 0;
-    /*padding: 20px;*/
+    padding: 20px;
     position: absolute;
     text-align: left;
     top: 0;
@@ -60,4 +60,11 @@ body {
 
 #mini_canvas {
     z-index: 300;
+}
+
+#connection_status.offline {
+    color: red;
+}
+#connection_status.online {
+    color: green;
 }
