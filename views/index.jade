@@ -1,4 +1,9 @@
-div#main
-    canvas#mainCanvas(width="1280", height="720", style="border: 1px solid black;)
-a(href="/auth/twitter") Sign in with twitter
-script(src="/javascripts/canvas.js")
+extends layout
+
+block content
+  .side
+  .main
+    canvas#main_canvas.canvas
+    canvas#drawing
+  .bottom_right
+    canvas.canvas
