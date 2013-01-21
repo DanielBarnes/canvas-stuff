@@ -1,4 +1,5 @@
 var mini_canvas = document.getElementById("mini_canvas");
+var mini_context = mini_canvas.getContext("2d");
 
 var main_canvas = document.getElementById("main_canvas");
 var main_context = main_canvas.getContext("2d");
@@ -50,7 +51,13 @@ $(drawing_canvas).mouseup(function (event) {
 
 // helpers
 function update() {
+    //update the main canvas
     main_context.drawImage(drawing_canvas, 0, 0);
+    //scale and draw the mini canvas
+    mini_context.save();
+    mini_context.scale(mini_canvas.width / main_canvas.width, mini_canvas.height / main_canvas.height);
+    mini_context.drawImage(main_canvas, 0, 0);
+    mini_context.restore();
 }
 function clear() {
     context.clearRect(0,0,drawing_canvas.width, drawing_canvas.height);
