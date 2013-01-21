@@ -55,6 +55,10 @@ function update() {
     main_context.drawImage(drawing_canvas, 0, 0);
     //scale and draw the mini canvas
     mini_context.save();
+    // white background so the main canvas can't cover it
+    mini_context.fillStyle = "#FFF";
+    mini_context.fillRect(0,0, mini_canvas.width, mini_canvas.height);
+    // scale the main canvas a draw
     mini_context.scale(mini_canvas.width / main_canvas.width, mini_canvas.height / main_canvas.height);
     mini_context.drawImage(main_canvas, 0, 0);
     mini_context.restore();
