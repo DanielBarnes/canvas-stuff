@@ -1,22 +1,22 @@
+// setup mini_canvas
 var mini_canvas = document.getElementById("mini_canvas");
 var mini_context = mini_canvas.getContext("2d");
 
+//setup main_canvas
 var main_canvas = document.getElementById("main_canvas");
 var main_context = main_canvas.getContext("2d");
+// css makes the size of canvas funky so you have to fix it
 main_canvas.height = main_canvas.clientHeight;
 main_canvas.width = main_canvas.clientWidth;
 console.log(main_canvas);
 
+// setup the drawing_canvas
 var drawing_canvas = document.getElementById("drawing");
 var context = drawing_canvas.getContext("2d");
+// css makes the size of canvas funky so you have to fix it
 drawing_canvas.height = drawing_canvas.clientHeight;
 drawing_canvas.width = drawing_canvas.clientWidth;
 console.log(drawing_canvas);
-
-
-$("#main").click(function (event) {
-    console.log(event);
-});
 
 
 // drawing_canvas Events
