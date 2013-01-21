@@ -1,0 +1,54 @@
+/*
+body {
+    background: url(/img/low_contrast_linen.png) #333;
+    color: #333;
+}
+*/
+.side {
+    bottom: 0;
+    box-sizing: border-box;
+    color: #CCC;
+    left: 0;
+    /*padding: 20px;*/
+    position: absolute;
+    text-align: left;
+    top: 0;
+    width: 240px;
+    overflow: scroll;
+    background: url(/img/low_contrast_linen.png) #333;
+    color: #333;
+}
+
+.main {
+    border-left: 1px solid #444;
+    bottom: 0;
+    box-shadow: 0 0 30px black;
+    left: 240px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.bottom_right {
+    position: absolute;
+    border: 4px solid #000;
+    bottom: 0;
+    right: 0;
+    height: 223px;
+    width: 298px;
+}
+
+.canvas {
+    border: 1px solid #000;
+    width: 100%;
+    height: 100%;
+}
+
+#drawing {
+    border: 1px;
+    margin-left: 2px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
