@@ -1,3 +1,33 @@
+//view/models
+var Tools = Backbone.Model.extend({
+    defauts: {
+        active: "rectangle"
+    },
+    getTool: function () {
+        return this.get("active");
+    },
+    setTool: function (tool) {
+        this.set({ active: tool });
+    }
+});
+
+var ToolsView = Backbone.View.extend({
+    render: function () {
+        this.$el.html(templatizer.tools());
+        return this.el;
+    },
+    events: {
+        "click": function (event) {
+            console.log("click event");
+            console.log(event.target.id);
+            $("#rectangle").removeClass("tool_focus");
+            $("#" + this.model.get("active")).removeClass("tool_focus");
+            $("#" + event.target.id).addClass("tool_focus");
+            this.model.setTool(event.target.id);
+        }
+    }
+});
+
 // setup mini_canvas
 var mini_canvas = document.getElementById("mini_canvas");
 var mini_context = mini_canvas.getContext("2d");
@@ -21,20 +51,32 @@ console.log(drawing_canvas);
 
 // drawing_canvas Events
 var isMouseDown = false;
-var shape = {};
+var shape;
 $(drawing_canvas).mousedown(function (event) {
     console.log("mousedown on #drawing");
     isMouseDown = true;
-    shape = { x: getX(event), y: getY(event) };
-
+    if (tools.getTool() === "rectangle") {
+        shape = { x: getX(event), y: getY(event) };
+    } else if (tools.getTool() === "line") {
+        shape =  [{ x: getX(event), y: getY(event) }];
+        context.beginPath();
+        context.moveTo(shape[0].x, shape[0].y);
+    }
 });
 
 $(drawing_canvas).mousemove(function (event) {
     if (isMouseDown) {
-        clear();
-        shape.w = getX(event) - shape.x;
-        shape.h = getY(event) - shape.y;
-        context.fillRect(shape.x, shape.y, shape.w, shape.h);
+        if (tools.getTool() === "rectangle") {
+            clear();
+            shape.w = getX(event) - shape.x;
+            shape.h = getY(event) - shape.y;
+            context.fillRect(shape.x, shape.y, shape.w, shape.h);
+        } else if (tools.getTool() === "line") {
+            clear();
+            context.lineTo(getX(event), getY(event));
+            shape.push({ x: getX(event), y: getY(event) });
+            drawLine(shape);
+        }
     } else {
 
     }
@@ -44,10 +86,18 @@ $(drawing_canvas).mouseup(function (event) {
     console.log("mouse up on #drawing");
     console.log({width: drawing_canvas.width, height: drawing_canvas.height});
     console.log(shape);
-    isMouseDown = false;
+    if (tools.getTool() === "line") {
+        context.stroke();
+    }
     update();
     clear();
+    isMouseDown = false;
 });
+
+// tool selector
+var tools = new Tools();
+var tool_view = new ToolsView({model: tools});
+$("#top").append(tool_view.render());
 
 // helpers
 function update() {
@@ -72,6 +122,14 @@ function getX(event) {
 function getY(event) {
     return event.clientY - drawing_canvas.offsetTop;
 }
+function drawLine(points) {
+    context.beginPath();
+    context.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i < points.length; i++) {
+        context.lineTo(points[i].x, points[i].y);
+    }
+    context.stroke();
+}
 
 // control the connection status icon label thingy
 function status_offline() {
@@ -84,6 +142,7 @@ function status_online() {
     $("#connection_status").addClass("online");
     $("#connection_status").text("online");
 }
+
 /*
 var Map = function (canvas) {
     this.canvas = canvas;

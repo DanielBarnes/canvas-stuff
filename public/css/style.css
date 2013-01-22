@@ -68,3 +68,22 @@ body {
 #connection_status.online {
     color: green;
 }
+
+.chunk {
+    border-top: 2px solid #52C3E7
+}
+
+.tool {
+    color: #CCC;
+    background: black;
+    border-radius: 20px;
+    width: 180px;
+    font-size: 17px;
+    padding: 5px 10px;
+    margin: 0 -10px 5px;
+    display: block;
+}
+
+.tool_focus {
+    background: #20555A;
+}

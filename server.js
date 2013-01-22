@@ -1,7 +1,9 @@
 var express = require('express'),
     http = require('http'),
-    path = require('path');
+    path = require('path'),
+    templatizer = require('templatizer');
 
+templatizer(__dirname + '/views/templates', __dirname + '/public/js/templatizer.js');
 var app = express();
 
 app.configure(function(){
