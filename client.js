@@ -1,7 +1,7 @@
 //view/models
 var Tools = Backbone.Model.extend({
     defauts: {
-        active: "rectangle"
+        active: "nothing"
     },
     getTool: function () {
         return this.get("active");
@@ -20,7 +20,7 @@ var ToolsView = Backbone.View.extend({
         "click": function (event) {
             console.log("click event");
             console.log(event.target.id);
-            $("#rectangle").removeClass("tool_focus");
+            $("#nothing").removeClass("tool_focus");
             $("#" + this.model.get("active")).removeClass("tool_focus");
             $("#" + event.target.id).addClass("tool_focus");
             this.model.setTool(event.target.id);
@@ -46,7 +46,56 @@ var context = drawing_canvas.getContext("2d");
 // css makes the size of canvas funky so you have to fix it
 drawing_canvas.height = drawing_canvas.clientHeight;
 drawing_canvas.width = drawing_canvas.clientWidth;
-console.log(drawing_canvas);
+
+// setup the large map
+var map = document.createElement("canvas");
+map.height = 3000;
+map.width = 4000;
+var map_context = map.getContext("2d");
+
+//Screen object to keep track of where you are
+var screen = {
+    x: 0,
+    y: 0,
+    impactBottom: map.height - main_canvas.height,
+    impactSide: map.width - main_canvas.width,
+    canMove: function (ajustX, ajustY) {
+        if (this.x + ajustX > 0 && this.x + ajustX < this.impactSide && this.y + ajustY > 0 && this.y + ajustY < this.impactBottom) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    prevX: null,
+    prevY: null,
+    move: function (event) {
+        if (this.prevX === null || this.prevY === null) {
+            this.prevX = getX(event);
+            this.prevY = getY(event);
+            return;
+        }
+        //get the changes in to the x and y values
+        var cx = getX(event) - this.prevX;
+        var cy = getY(event) - this.prevY;
+
+        //test the move and make it, if possible
+        if (this.canMove(cx, cy)) {
+            this.x += cx;
+            this.y += cy;
+
+            //update the screens
+            update_screen_view();
+
+            //update the prev x, y values
+            this.prevX = getX(event);
+            this.prevY = getY(event);
+        }
+    },
+    resetMovement: function () {
+        this.prevX = null;
+        this.prevY = null;
+    }
+};
 
 
 // drawing_canvas Events
@@ -61,6 +110,11 @@ $(drawing_canvas).mousedown(function (event) {
         shape =  [{ x: getX(event), y: getY(event) }];
         context.beginPath();
         context.moveTo(shape[0].x, shape[0].y);
+    } else if (tools.getTool() === "box_brush") {
+        shape = null;
+        context.fillRect(getX(event), getY(event), 10, 10);
+    } else if (tools.getTool() === "nothing") {
+        return;
     }
 });
 
@@ -76,6 +130,10 @@ $(drawing_canvas).mousemove(function (event) {
             context.lineTo(getX(event), getY(event));
             shape.push({ x: getX(event), y: getY(event) });
             drawLine(shape);
+        } else if (tools.getTool() === "box_brush") {
+            context.fillRect(getX(event), getY(event), 10, 10);
+        } else if (tools.getTool() === "nothing") {
+            screen.move(event);
         }
     } else {
 
@@ -88,6 +146,8 @@ $(drawing_canvas).mouseup(function (event) {
     console.log(shape);
     if (tools.getTool() === "line") {
         context.stroke();
+    } else if (tools.getTool() === "nothing") {
+        screen.resetMovement();
     }
     update();
     clear();
@@ -102,19 +162,31 @@ $("#top").append(tool_view.render());
 // helpers
 function update() {
     //update the main canvas
-    main_context.drawImage(drawing_canvas, 0, 0);
+    map_context.drawImage(drawing_canvas, screen.x, screen.y);
     //scale and draw the mini canvas
     mini_context.save();
     // white background so the main canvas can't cover it
     mini_context.fillStyle = "#FFF";
     mini_context.fillRect(0,0, mini_canvas.width, mini_canvas.height);
     // scale the main canvas a draw
-    mini_context.scale(mini_canvas.width / main_canvas.width, mini_canvas.height / main_canvas.height);
-    mini_context.drawImage(main_canvas, 0, 0);
+    mini_context.scale(mini_canvas.width / map.width, mini_canvas.height / map.height);
+    mini_context.drawImage(map, 0, 0);
     mini_context.restore();
+    //draw you current screen of the map to the main_canvas
+    // *** *** maybe just call the update_screen_view function *** ***
+    main_context.drawImage(map, screen.x, screen.y, main_canvas.width, main_canvas.height, 0, 0, main_canvas.width, main_canvas.height);
 }
-function clear() {
-    context.clearRect(0,0,drawing_canvas.width, drawing_canvas.height);
+function update_screen_view() {
+    clear(main_context, main_canvas.width, main_canvas.height);
+    //draw you current screen of the map to the main_canvas
+    main_context.drawImage(map, screen.x, screen.y, main_canvas.width, main_canvas.height, 0, 0, main_canvas.width, main_canvas.height);
+}
+function clear(ctx, width, height) {
+    if (ctx) {
+        ctx.clearRect(0, 0, width, height);
+    } else {
+        context.clearRect(0,0,drawing_canvas.width, drawing_canvas.height);
+    }
 }
 function getX(event) {
     return event.clientX - $(".main")[0].offsetLeft;

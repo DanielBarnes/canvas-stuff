@@ -6,21 +6,6 @@ var jade=function(exports){Array.isArray||(Array.isArray=function(arr){return"[o
 
 // create our folder objects
 
-// rectangle.jade compiled template
-exports.rectangle = function anonymous(locals, attrs, escape, rethrow, merge) {
-    attrs = attrs || jade.attrs;
-    escape = escape || jade.escape;
-    rethrow = rethrow || jade.rethrow;
-    merge = merge || jade.merge;
-    var buf = [];
-    with (locals || {}) {
-        var interp;
-        var __indent = [];
-        buf.push('\n<label class="tool tool_focus">draw some rectangles</label>');
-    }
-    return buf.join("");
-};
-
 // tools.jade compiled template
 exports.tools = function anonymous(locals, attrs, escape, rethrow, merge) {
     attrs = attrs || jade.attrs;
@@ -31,7 +16,7 @@ exports.tools = function anonymous(locals, attrs, escape, rethrow, merge) {
     with (locals || {}) {
         var interp;
         var __indent = [];
-        buf.push('\n<div>\n  <label id="rectangle" class="tool tool_focus">Rectangles :P</label>\n</div>\n<div>\n  <label id="line" class="tool">Line Like Snakes</label>\n</div>');
+        buf.push('\n<div>\n  <label id="nothing" class="tool tool_focus">the Does nothing tool?</label>\n</div>\n<div>\n  <label id="rectangle" class="tool">Rectangles :P</label>\n</div>\n<div>\n  <label id="line" class="tool">Line Like Snakes</label>\n</div>\n<div>\n  <label id="box_brush" class="tool">draw boxes like lines!</label>\n</div>');
     }
     return buf.join("");
 };
