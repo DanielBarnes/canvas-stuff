@@ -60,7 +60,7 @@ var screen = {
     impactBottom: map.height - main_canvas.height,
     impactSide: map.width - main_canvas.width,
     canMove: function (ajustX, ajustY) {
-        if (this.x + ajustX > 0 && this.x + ajustX < this.impactSide && this.y + ajustY > 0 && this.y + ajustY < this.impactBottom) {
+        if (this.x - ajustX > 0 && this.x - ajustX < this.impactSide && this.y - ajustY > 0 && this.y - ajustY < this.impactBottom) {
             return true;
         } else {
             return false;
@@ -80,8 +80,8 @@ var screen = {
 
         //test the move and make it, if possible
         if (this.canMove(cx, cy)) {
-            this.x += cx;
-            this.y += cy;
+            this.x -= cx;
+            this.y -= cy;
 
             //update the screens
             update_screen_view();
@@ -163,23 +163,40 @@ $("#top").append(tool_view.render());
 function update() {
     //update the main canvas
     map_context.drawImage(drawing_canvas, screen.x, screen.y);
+
+    //update the mini map
+    update_mini();
+
+    //draw your current screen of the map to the main_canvas
+    update_screen_view();
+}
+function update_mini() {
+    var xScale = mini_canvas.width / map.width;
+    var yScale = mini_canvas.height / map.height;
     //scale and draw the mini canvas
     mini_context.save();
     // white background so the main canvas can't cover it
     mini_context.fillStyle = "#FFF";
     mini_context.fillRect(0,0, mini_canvas.width, mini_canvas.height);
     // scale the main canvas a draw
-    mini_context.scale(mini_canvas.width / map.width, mini_canvas.height / map.height);
+    mini_context.scale(xScale, yScale);
     mini_context.drawImage(map, 0, 0);
     mini_context.restore();
-    //draw you current screen of the map to the main_canvas
-    // *** *** maybe just call the update_screen_view function *** ***
-    main_context.drawImage(map, screen.x, screen.y, main_canvas.width, main_canvas.height, 0, 0, main_canvas.width, main_canvas.height);
+    draw_mini_screen_box();
+}
+function draw_mini_screen_box() {
+    // save and draw the main_canvas out line
+    mini_context.save();
+    mini_context.strokeStyle = '#158FE0';
+    mini_context.lineWidth = 1;
+    mini_context.strokeRect(screen.x * (mini_canvas.width / map.width), screen.y * (mini_canvas.height / map.height), main_canvas.width * (mini_canvas.width / map.width), main_canvas.height * (mini_canvas.height / map.height));
+    mini_context.restore();
 }
 function update_screen_view() {
     clear(main_context, main_canvas.width, main_canvas.height);
     //draw you current screen of the map to the main_canvas
     main_context.drawImage(map, screen.x, screen.y, main_canvas.width, main_canvas.height, 0, 0, main_canvas.width, main_canvas.height);
+    update_mini();
 }
 function clear(ctx, width, height) {
     if (ctx) {
