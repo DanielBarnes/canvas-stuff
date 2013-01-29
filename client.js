@@ -101,7 +101,7 @@ var screen = {
 // drawing_canvas Events
 var isMouseDown = false;
 var shape;
-$(drawing_canvas).mousedown(function (event) {
+drawing_canvas.onmousedown = function (event) {
     console.log("mousedown on #drawing");
     isMouseDown = true;
     if (tools.getTool() === "rectangle") {
@@ -116,9 +116,9 @@ $(drawing_canvas).mousedown(function (event) {
     } else if (tools.getTool() === "nothing") {
         return;
     }
-});
+};
 
-$(drawing_canvas).mousemove(function (event) {
+drawing_canvas.onmousemove = function (event) {
     if (isMouseDown) {
         if (tools.getTool() === "rectangle") {
             clear();
@@ -138,9 +138,9 @@ $(drawing_canvas).mousemove(function (event) {
     } else {
 
     }
-});
+};
 
-$(drawing_canvas).mouseup(function (event) {
+drawing_canvas.onmouseup = function (event) {
     console.log("mouse up on #drawing");
     console.log({width: drawing_canvas.width, height: drawing_canvas.height});
     console.log(shape);
@@ -152,7 +152,7 @@ $(drawing_canvas).mouseup(function (event) {
     update();
     clear();
     isMouseDown = false;
-});
+};
 
 // tool selector
 var tools = new Tools();
