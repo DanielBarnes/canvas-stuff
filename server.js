@@ -23,7 +23,10 @@ app.configure('development', function(){
 });
 
 app.get('/', function (req, res) {
-    res.render("index", {});
+    res.render('index', {});
+});
+app.get('/gl', function (req, res) {
+    res.render('gl', {});
 });
 
 var server = http.createServer(app);
@@ -33,6 +36,6 @@ server.listen(app.get('port'), function(){
 
 var io = require('socket.io').listen(server);
 
-io.sockets.on("connection", function (socket) {
+io.sockets.on('connection', function (socket) {
 
 });//connection
